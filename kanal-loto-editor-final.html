@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Kanal Loto — Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#07111f;color:white;font-family:'Barlow Condensed',sans-serif;padding:12px;min-height:100vh;}
+h1{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:#FFD700;}
+.sub{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:2px;margin-bottom:10px;}
+.status{border-radius:5px;padding:8px 12px;font-size:12px;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.status.ok{background:rgba(0,200,80,0.08);border:1px solid rgba(0,200,80,0.3);color:#00C850;}
+.status.err{background:rgba(200,0,0,0.08);border:1px solid rgba(200,0,0,0.3);color:#FF4466;}
+.status.pending{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);color:#FFD700;}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sdot.ok{background:#00C850;animation:bl 1.2s ease-in-out infinite;}
+.sdot.err{background:#FF4466;}
+.sdot.pending{background:#FFD700;animation:bl 0.6s ease-in-out infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0.2}}
+.setup-box{background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;}
+.setup-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:#FFD700;margin-bottom:8px;}
+.setup-hint{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:1px;margin-bottom:8px;line-height:1.5;}
+.btn-setup{width:100%;padding:10px;background:linear-gradient(135deg,#FFD700,#CC9900);color:#003087;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;border:none;border-radius:6px;cursor:pointer;margin-top:4px;}
+.sec{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:3px;color:rgba(255,215,0,0.6);margin:10px 0 5px;border-left:2px solid #FFD700;padding-left:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px;}
+.b{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:7px 8px;}
+.lbl{font-size:8px;color:#FFD700;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid rgba(255,215,0,0.12);}
+.lbl.r{color:#FF4466;border-bottom-color:rgba(255,50,80,0.12);}
+.wi{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:3px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:13px;padding:5px 7px;outline:none;margin-top:3px;}
+.wi:focus{border-color:#FFD700;}
+.sb{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:6px;padding:8px 9px;margin-bottom:6px;}
+.col-h{display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:3px;margin-bottom:3px;}
+.ch{font-size:7px;color:rgba(255,255,255,0.25);text-align:center;letter-spacing:1px;}
+.dr{display:grid;grid-template-columns:52px 1fr 1fr 1fr;align-items:center;gap:3px;margin-bottom:3px;}
+.drt{font-size:9px;color:#FFD700;font-weight:700;letter-spacing:0.3px;}
+.wi2{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:3px;color:white;font-family:'Bebas Neue',sans-serif;font-size:16px;padding:4px 3px;text-align:center;outline:none;width:100%;letter-spacing:1px;}
+.wi2:focus{border-color:#00C850;}
+textarea.ta{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:4px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:13px;padding:6px 8px;outline:none;resize:vertical;min-height:60px;margin-top:4px;}
+.ta:focus{border-color:#FFD700;}
+.pb-btns{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+.pb-btn{padding:3px 9px;border-radius:12px;border:1px solid #003087;background:rgba(0,48,135,0.3);color:#FFD700;font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;}
+.brk-area{background:rgba(200,0,0,0.06);border:1px solid rgba(200,0,0,0.2);border-radius:5px;padding:8px 9px;margin-top:6px;}
+.brk-ttl{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:#FF4466;margin-bottom:5px;}
+.btn-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.btn{padding:7px 14px;border-radius:20px;border:none;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;cursor:pointer;transition:transform 0.1s;flex:1;}
+.btn:active{transform:scale(0.97);}
+.b-brk{background:#CC0000;color:white;}
+.b-hd{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.12);}
+.b-cl{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);}
+.b-push{background:linear-gradient(135deg,#007733,#00aa55);color:white;}
+</style>
+</head>
+<body>
+
+<h1>KANAL LOTO EDITOR</h1>
+<div class="sub">CROSS-DEVICE SYNC — Mete ajou nenpòt ki kote</div>
+
+<div id="status-bar" class="status pending">
+  <div class="sdot pending" id="sdot"></div>
+  <span id="status-txt">Ap konekte ak cloud...</span>
+</div>
+
+<div class="setup-box" id="setup-box" style="display:none;">
+  <div class="setup-title">PREMYE FWA — Kreye Cloud Storage</div>
+  <div class="setup-hint">Klike bouton an yon sèl fwa pou kreye espas cloud Kanal Loto ou a. Sa ap pran 5 segonn sèlman.</div>
+  <button class="btn-setup" onclick="createBin()">KREYE CLOUD STORAGE</button>
+</div>
+
+<div class="sec">Info Jeneral</div>
+<div class="grid2">
+  <div class="b"><div class="lbl">Date</div><input class="wi" id="ei-d" placeholder="2 Me 2026" oninput="push()"></div>
+  <div class="b"><div class="lbl">Ticker</div><input class="wi" id="ei-t1" placeholder="TapTap Send — voye lajan..." oninput="push()"></div>
+  <div class="b" style="grid-column:span 2"><div class="lbl">Link</div><input class="wi" id="ei-tl" placeholder="taptapsend.com/..." oninput="push()"></div>
+</div>
+
+<div class="sec">Tennessee — 10:28AM · 1:28PM · 7:28PM ET</div>
+<div class="sb">
+  <div class="col-h"><div></div><div class="ch">C3</div><div class="ch">P4A</div><div class="ch">P4B</div></div>
+  <div class="dr"><div class="drt">10:28AM</div><input class="wi2" id="tn0p3" maxlength="3" placeholder="367" oninput="push()"><input class="wi2" id="tn0pa" maxlength="2" placeholder="67" oninput="push()"><input class="wi2" id="tn0pb" maxlength="2" placeholder="89" oninput="push()"></div>
+  <div class="dr"><div class="drt">1:28PM</div><input class="wi2" id="tn1p3" maxlength="3" placeholder="496" oninput="push()"><input class="wi2" id="tn1pa" maxlength="2" placeholder="98" oninput="push()"><input class="wi2" id="tn1pb" maxlength="2" placeholder="94" oninput="push()"></div>
+  <div class="dr"><div class="drt">7:28PM</div><input class="wi2" id="tn2p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="tn2pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="tn2pb" maxlength="2" placeholder="—" oninput="push()"></div>
+</div>
+
+<div class="sec">Texas — 11:00AM · 1:27PM · 7:00PM · 11:12PM ET</div>
+<div class="sb">
+  <div class="col-h"><div></div><div class="ch">P3</div><div class="ch">P4A</div><div class="ch">P4B</div></div>
+  <div class="dr"><div class="drt">11:00AM</div><input class="wi2" id="tx0p3" maxlength="3" placeholder="575" oninput="push()"><input class="wi2" id="tx0pa" maxlength="2" placeholder="48" oninput="push()"><input class="wi2" id="tx0pb" maxlength="2" placeholder="44" oninput="push()"></div>
+  <div class="dr"><div class="drt">1:27PM</div><input class="wi2" id="tx1p3" maxlength="3" placeholder="421" oninput="push()"><input class="wi2" id="tx1pa" maxlength="2" placeholder="35" oninput="push()"><input class="wi2" id="tx1pb" maxlength="2" placeholder="93" oninput="push()"></div>
+  <div class="dr"><div class="drt">7:00PM</div><input class="wi2" id="tx2p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="tx2pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="tx2pb" maxlength="2" placeholder="—" oninput="push()"></div>
+  <div class="dr"><div class="drt">11:12PM</div><input class="wi2" id="tx3p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="tx3pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="tx3pb" maxlength="2" placeholder="—" oninput="push()"></div>
+</div>
+
+<div class="sec">New Jersey — 12:59PM · 10:57PM ET</div>
+<div class="sb">
+  <div class="col-h"><div></div><div class="ch">P3</div><div class="ch">P4A</div><div class="ch">P4B</div></div>
+  <div class="dr"><div class="drt">12:59PM</div><input class="wi2" id="nj0p3" maxlength="3" placeholder="327" oninput="push()"><input class="wi2" id="nj0pa" maxlength="2" placeholder="57" oninput="push()"><input class="wi2" id="nj0pb" maxlength="2" placeholder="83" oninput="push()"></div>
+  <div class="dr"><div class="drt">10:57PM</div><input class="wi2" id="nj1p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="nj1pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="nj1pb" maxlength="2" placeholder="—" oninput="push()"></div>
+</div>
+
+<div class="sec">Georgia — 12:29PM · 6:59PM · 11:34PM ET</div>
+<div class="sb">
+  <div class="col-h"><div></div><div class="ch">C3</div><div class="ch">P4A</div><div class="ch">P4B</div></div>
+  <div class="dr"><div class="drt">12:29PM</div><input class="wi2" id="ga0p3" maxlength="3" placeholder="575" oninput="push()"><input class="wi2" id="ga0pa" maxlength="2" placeholder="49" oninput="push()"><input class="wi2" id="ga0pb" maxlength="2" placeholder="82" oninput="push()"></div>
+  <div class="dr"><div class="drt">6:59PM</div><input class="wi2" id="ga1p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="ga1pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="ga1pb" maxlength="2" placeholder="—" oninput="push()"></div>
+  <div class="dr"><div class="drt">11:34PM</div><input class="wi2" id="ga2p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="ga2pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="ga2pb" maxlength="2" placeholder="—" oninput="push()"></div>
+</div>
+
+<div class="sec">Florida — 1:30PM · 9:45PM ET</div>
+<div class="sb">
+  <div class="col-h"><div></div><div class="ch">P3</div><div class="ch">P4A</div><div class="ch">P4B</div></div>
+  <div class="dr"><div class="drt">1:30PM</div><input class="wi2" id="fl0p3" maxlength="3" placeholder="770" oninput="push()"><input class="wi2" id="fl0pa" maxlength="2" placeholder="48" oninput="push()"><input class="wi2" id="fl0pb" maxlength="2" placeholder="44" oninput="push()"></div>
+  <div class="dr"><div class="drt">9:45PM</div><input class="wi2" id="fl1p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="fl1pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="fl1pb" maxlength="2" placeholder="—" oninput="push()"></div>
+</div>
+
+<div class="sec">New York — 2:30PM · 10:30PM ET</div>
+<div class="sb">
+  <div class="col-h"><div></div><div class="ch">NUM</div><div class="ch">W4A</div><div class="ch">W4B</div></div>
+  <div class="dr"><div class="drt">2:30PM</div><input class="wi2" id="ny0p3" maxlength="3" placeholder="903" oninput="push()"><input class="wi2" id="ny0pa" maxlength="2" placeholder="78" oninput="push()"><input class="wi2" id="ny0pb" maxlength="2" placeholder="65" oninput="push()"></div>
+  <div class="dr"><div class="drt">10:30PM</div><input class="wi2" id="ny1p3" maxlength="3" placeholder="—" oninput="push()"><input class="wi2" id="ny1pa" maxlength="2" placeholder="—" oninput="push()"><input class="wi2" id="ny1pb" maxlength="2" placeholder="—" oninput="push()"></div>
+</div>
+
+<div class="sec">Boul Probab</div>
+<div class="b" style="background:rgba(255,215,0,0.04);border-color:rgba(255,215,0,0.15);">
+  <textarea class="ta" id="ei-pb" placeholder="Florida Pick 3 — joue 7, 3, 9&#10;Georgia Cash 4 — joue 49-82" oninput="push()"></textarea>
+  <div class="pb-btns">
+    <button class="pb-btn" onclick="addPb('FL Pick 3','7,3,9')">+FL P3</button>
+    <button class="pb-btn" onclick="addPb('GA Cash 3','5,7,2')">+GA C3</button>
+    <button class="pb-btn" onclick="addPb('TN Cash 4','67-89')">+TN C4</button>
+    <button class="pb-btn" onclick="addPb('TX Pick 3','1,4,8')">+TX P3</button>
+    <button class="pb-btn" onclick="addPb('NY Numbers','2,9,6')">+NY</button>
+    <button class="pb-btn" onclick="addPb('NJ Pick 4','33-77')">+NJ P4</button>
+  </div>
+</div>
+
+<div class="brk-area">
+  <div class="brk-ttl">PIBLISITE — BREAK CARD</div>
+  <div class="grid2">
+    <div class="b"><div class="lbl r">Tit</div><input class="wi" id="brk-t" value="TapTap Send"></div>
+    <div class="b"><div class="lbl r">Mesaj</div><input class="wi" id="brk-m" value="Voye lajan fasil"></div>
+    <div class="b" style="grid-column:span 2"><div class="lbl r">Link</div><input class="wi" id="brk-l" value="taptapsend.com"></div>
+  </div>
+  <div class="btn-row" style="margin-top:6px;">
+    <button class="btn b-brk" onclick="showBreak()">MONTRE PIBLISITE</button>
+    <button class="btn b-hd" onclick="hideBreak()">KACHE</button>
+  </div>
+</div>
+
+<div class="btn-row">
+  <button class="btn b-push" onclick="push()">METE AJÒ KOUNYE A</button>
+  <button class="btn b-cl" onclick="clearAll()">EFASE TOU</button>
+</div>
+
+<script>
+const API_KEY='$2a$10$gCLeqHTbYLhL9lTx2zXwreFvUgIuN0tRejJENU8iluOIv4TDaKfeG';
+const BIN_ID_KEY='kl_jsonbin_id';
+let binId=localStorage.getItem(BIN_ID_KEY);
+let pushTimer=null;
+
+function setStatus(type,msg){
+  document.getElementById('status-bar').className='status '+type;
+  document.getElementById('sdot').className='sdot '+type;
+  document.getElementById('status-txt').textContent=msg;
+}
+
+function g(id){return(document.getElementById(id)||{}).value||'';}
+
+function getData(){
+  return {
+    date:g('ei-d'),t1:g('ei-t1'),tl:g('ei-tl'),
+    tn0p3:g('tn0p3'),tn0pa:g('tn0pa'),tn0pb:g('tn0pb'),
+    tn1p3:g('tn1p3'),tn1pa:g('tn1pa'),tn1pb:g('tn1pb'),
+    tn2p3:g('tn2p3'),tn2pa:g('tn2pa'),tn2pb:g('tn2pb'),
+    tx0p3:g('tx0p3'),tx0pa:g('tx0pa'),tx0pb:g('tx0pb'),
+    tx1p3:g('tx1p3'),tx1pa:g('tx1pa'),tx1pb:g('tx1pb'),
+    tx2p3:g('tx2p3'),tx2pa:g('tx2pa'),tx2pb:g('tx2pb'),
+    tx3p3:g('tx3p3'),tx3pa:g('tx3pa'),tx3pb:g('tx3pb'),
+    nj0p3:g('nj0p3'),nj0pa:g('nj0pa'),nj0pb:g('nj0pb'),
+    nj1p3:g('nj1p3'),nj1pa:g('nj1pa'),nj1pb:g('nj1pb'),
+    ga0p3:g('ga0p3'),ga0pa:g('ga0pa'),ga0pb:g('ga0pb'),
+    ga1p3:g('ga1p3'),ga1pa:g('ga1pa'),ga1pb:g('ga1pb'),
+    ga2p3:g('ga2p3'),ga2pa:g('ga2pa'),ga2pb:g('ga2pb'),
+    fl0p3:g('fl0p3'),fl0pa:g('fl0pa'),fl0pb:g('fl0pb'),
+    fl1p3:g('fl1p3'),fl1pa:g('fl1pa'),fl1pb:g('fl1pb'),
+    ny0p3:g('ny0p3'),ny0pa:g('ny0pa'),ny0pb:g('ny0pb'),
+    ny1p3:g('ny1p3'),ny1pa:g('ny1pa'),ny1pb:g('ny1pb'),
+    probab:document.getElementById('ei-pb').value,
+  };
+}
+
+async function createBin(){
+  setStatus('pending','Ap kreye cloud storage...');
+  try{
+    const r=await fetch('https://api.jsonbin.io/v3/b',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Name':'KanalLoto','X-Private':'false'},
+      body:JSON.stringify({init:true})
+    });
+    if(r.ok){
+      const d=await r.json();
+      binId=d.metadata.id;
+      localStorage.setItem(BIN_ID_KEY,binId);
+      document.getElementById('setup-box').style.display='none';
+      setStatus('ok','Cloud kreye! ID: '+binId);
+      push();
+    } else {
+      const err=await r.text();
+      setStatus('err','Erè: '+err);
+    }
+  }catch(e){setStatus('err','Erè rezo: '+e.message);}
+}
+
+async function push(){
+  if(!binId){setStatus('err','Pa konekte — klike KREYE CLOUD STORAGE');return;}
+  clearTimeout(pushTimer);
+  pushTimer=setTimeout(async()=>{
+    try{
+      const r=await fetch('https://api.jsonbin.io/v3/b/'+binId,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
+        body:JSON.stringify(getData())
+      });
+      if(r.ok)setStatus('ok','✓ Senkronize — '+new Date().toLocaleTimeString());
+      else setStatus('err','Erè senkronizasyon');
+    }catch(e){setStatus('err','Erè rezo');}
+  },600);
+}
+
+async function pushData(data){
+  if(!binId)return;
+  await fetch('https://api.jsonbin.io/v3/b/'+binId,{
+    method:'PUT',
+    headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
+    body:JSON.stringify(data)
+  });
+}
+
+function showBreak(){pushData({...getData(),showBreak:true,brkt:g('brk-t'),brkm:g('brk-m'),brkl:g('brk-l')});}
+function hideBreak(){pushData({...getData(),hideBreak:true});}
+
+function addPb(state,nums){
+  const ta=document.getElementById('ei-pb');
+  const line=`<span class="pb-state">${state}</span> — joue <span class="pb-nums">${nums}</span>`;
+  ta.value=ta.value?ta.value+'\n'+line:line;
+  push();
+}
+
+function clearAll(){
+  document.querySelectorAll('input,textarea').forEach(i=>{if(i.type!=='button')i.value='';});
+  push();
+}
+
+// Init
+if(binId){
+  setStatus('ok','Konekte — prè pou transmèt! ID: '+binId);
+}else{
+  setStatus('err','Pa konekte — klike bouton pou kreye cloud storage');
+  document.getElementById('setup-box').style.display='block';
+}
+</script>
+</body>
+</html>
