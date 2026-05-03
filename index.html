@@ -385,8 +385,8 @@ function applyData(d){
 }
 
 async function pollData(){
-  binId=localStorage.getItem("kl_jsonbin_id");
-  if(!binId){setSyncStatus(false);return;}
+  binId="69f7c895aaba882197696263";
+  localStorage.setItem("kl_jsonbin_id",binId);
   try{
     var r=await fetch("https://api.jsonbin.io/v3/b/"+binId+"/latest",{
       headers:{"X-Master-Key":MASTER_KEY,"X-Bin-Meta":"false"}
